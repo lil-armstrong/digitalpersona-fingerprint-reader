@@ -1,0 +1,63 @@
+digraph {
+    layout=dot;
+    rankdir=LR;
+    compound=true;
+    concentrate=true;
+    nodesep=0.2;
+    ranksep=0.2;
+    splines=true;
+    label="Build pipeline"
+    graph[
+        style=dashed; color=gray;
+        fontname="Lucida Console"; fontsize=10; fontcolor=black;
+        labelloc=top; labeljust=left;
+    ];
+    node [
+        shape=record; color=lightgray;
+        fontname="Lucida Console"; fontsize=10; fontcolor=black;
+    ];
+    edge [
+        color="#8888FF";
+        fontname="Arial"; fontsize=10; fontcolor=darkblue;
+    ]
+    subgraph cluster_src {
+        label="src/"
+        src[ label="
+            <ts> *.ts
+            |<spec> *.spec.ts
+        "];
+    }
+
+    subgraph cluster_dist {
+        label="dist/";
+        out [ label="
+            <es5> es5/
+            |<es6> es6/
+        "];
+        bundles [ label="
+            <es5> es5.bundles/
+            |<es6> es6.bundles/
+        "];
+        typings [ label="typings/"];
+        api [ label="
+            <api> api/
+            |<docs> api/docs/
+        "];
+    }
+
+    subgraph cluster_tests {
+        label="Unit tests";
+        test [ label="
+            <karma> %temp%/karma-typescript-bundle-*.js
+        "];
+    }
+    src:ts -> typings [ label="tsc"; ];
+    src:ts -> out:es5 [ label="tsc-es5"; ];
+    src:ts -> out:es6 [ label="tsc-es6"; ];
+    src:ts -> api:api [ label="api"; ];
+    { src:ts, src:spec } -> test:karma [ label="test" ];
+    out:es5 -> bundles:es5 [ label="rollup-es5-*"]
+    out:es6 -> bundles:es6 [ label="rollup-es6-*"]
+    api:api:e -> api:docs:e [ label="api-doc"; ];
+
+}

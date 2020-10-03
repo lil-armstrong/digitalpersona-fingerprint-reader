@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Persona JS Finger print scanner plugin</title>
+</head>
+
+<body>
+<main>
+    <div>
+        <header><h1>JS Fingerprint Endpoint</h1></header>
+        <button id="startReading">Start reading</button>
+        <div id="result"></div>
+    </div>
+</main>
+<!-- Digital Persona Core API-->
+<script src="https://cdn.jsdelivr.net/npm/@digitalpersona/core@0.2.6/dist/es5.bundles/index.umd.min.js"
+        crossorigin></script>
+<!-- Digital Persona Authentication API-->
+<script
+        src="https://cdn.jsdelivr.net/npm/@digitalpersona/authentication@0.2.6/dist/es5.bundles/index.umd.min.js"
+        crossorigin></script>
+<!-- Digital Persona Devices API-->
+<script crossorigin
+        src="https://cdn.jsdelivr.net/npm/@digitalpersona/devices@0.2.6/dist/es5.bundles/index.umd.min.js"></script>
+
+<!-- Digital Persona Enrollment API-->
+<script src="https://cdn.jsdelivr.net/npm/@digitalpersona/enrollment@0.2.9/dist/es5.bundles/index.umd.min.js"
+        crossorigin></script>
+<!-- Polyfills -->
+<script
+        src="https://polyfill.io/v3/polyfill.min.js?features=Symbol%2Cfetch%2CString.prototype.endsWith%2CObject.assign%2CArray.prototype.findIndex%2CArray.prototype.includes"></script>
+<!-- Digital Persona WebSDK -->
+<script type="text/javascript" src="./src/websdk/websdk.client.js"></script>
+<!-- Rollup es5 bundle -->
+<script type="module" src="build/bundle.js"></script>
+<script type="module">
+	window.addEventListener( 'DOMContentLoaded', function () {
+		// Check if the device has been connected
+		let reader = new fpController( {
+			debug: true,
+			version: 1
+		} );
+		let trigger = document.getElementById( 'startReading' );
+		let result = document.getElementById( 'result' );
+		if ( trigger )
+			trigger.addEventListener( 'click', (e) => {
+				reader.startReading()
+			} );
+
+      async () => await (reader.onAcqusitionStopped).then(e=>{
+      	result.innerHTML(reader.getToken())
+      })
+	} )
+
+</script>
+</body>
+
+</html>
